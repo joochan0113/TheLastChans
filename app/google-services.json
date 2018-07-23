@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "10191742188",
+    "firebase_url": "https://thelastchans-843bb.firebaseio.com",
+    "project_id": "thelastchans-843bb",
+    "storage_bucket": "thelastchans-843bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10191742188:android:82f9b31ac5d7fb53",
+        "android_client_info": {
+          "package_name": "com.example.joochankim.thelastchans"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "10191742188-4t6rrckclae7gl7vomktudr107u4o58e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.joochankim.thelastchans",
+            "certificate_hash": "401a0af7b007391ecc2c679b76e3e4c2e55f0907"
+          }
+        },
+        {
+          "client_id": "10191742188-ikihvfik8cdj7cg361vl2bh3r5uk8mi6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtuG7LzTzc6jgi0XSMOHus27VyJOyWmmc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "10191742188-ikihvfik8cdj7cg361vl2bh3r5uk8mi6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

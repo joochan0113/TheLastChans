@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#a897d4f3"
+    tools:context="com.example.joochankim.thelastchans.MainActivity">
+
+    <ImageView
+        android:id="@+id/iconPlot"
+        android:layout_width="61dp"
+        android:layout_height="28dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/iconSetting"
+        android:layout_marginStart="130dp"
+        app:srcCompat="@drawable/plotsignal" />
+
+
+    <TextView
+        android:id="@+id/txtPlot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/iconPlot"
+        android:layout_below="@+id/iconPlot"
+        android:text="Plot Signal" />
+
+    <Button
+        android:id="@+id/connect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Connect" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="222dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp"
+        app:srcCompat="@drawable/team" />
+
+    <TextView
+        android:id="@+id/textBOT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-80dp"
+        android:gravity="center_horizontal"
+        android:text="Welcome"
+        android:textStyle="bold"
+        android:fontFamily="cursive"
+        android:textSize="50sp" />
+
+    <TextView
+        android:id="@+id/btTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:text="Hey" />
+
+    <Button
+        android:id="@+id/btnTalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/connect"
+        android:layout_marginTop="101dp"
+        android:text="Talk" />
+
+    <ImageView
+        android:id="@+id/iconGame"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/iconPlot"
+        android:layout_toEndOf="@+id/btTxt"
+        android:src="@drawable/once" />
+
+    <TextView
+        android:id="@+id/txtGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/iconGame"
+        android:layout_below="@+id/iconGame"
+        android:text="Play Game!" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="133dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/imageView"
+        android:layout_toStartOf="@+id/btTxt"
+        android:background="#f06ea2"
+        android:text="About FamFit"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="119dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/imageView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="38dp"
+        android:background="#f06ea2"
+        android:text="Settings"
+        android:textColor="#ffffff" />
+
+    <ImageView
+        android:id="@+id/iconSetting"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_above="@+id/btnTalk"
+        android:layout_alignEnd="@+id/iconSignout"
+        android:layout_marginBottom="-101dp"
+        app:srcCompat="@drawable/service" />
+
+    <ImageView
+        android:id="@+id/iconSignout"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_alignEnd="@+id/button6"
+        android:layout_alignTop="@+id/btnTalk"
+        app:srcCompat="@drawable/signout" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="27dp"
+        android:layout_height="29dp"
+        android:layout_alignBottom="@+id/btnTalk"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="121dp"
+        app:srcCompat="@drawable/profile" />
+
+
+</RelativeLayout>
