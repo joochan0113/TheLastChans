@@ -1,5 +1,6 @@
 package com.example.joochankim.thelastchans;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -43,7 +44,7 @@ public class GameActivity extends AppCompatActivity {
     TextView movep;
     private static final String TAG = "GameActivity";
     Button connect, mama, baby, gold;
-
+    int bluetoothBtnState;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +62,7 @@ public class GameActivity extends AppCompatActivity {
         baby = (Button) findViewById(R.id.baby);
         gold = (Button) findViewById(R.id.gold);
 
+
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +72,8 @@ public class GameActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), DeviceList.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
-                GameActivity.this.BTCheck(connect);
+
+                bluetoothBtnState = 1;
             }
         });
         mama.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +85,8 @@ public class GameActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), DeviceList.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
-                GameActivity.this.BTCheck(mama);
+
+                bluetoothBtnState = 2;
             }
         });
         baby.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +98,7 @@ public class GameActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), DeviceList.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
-                GameActivity.this.BTCheck(baby);
+                bluetoothBtnState = 3;
             }
         });
         gold.setOnClickListener(new View.OnClickListener() {
@@ -106,11 +110,145 @@ public class GameActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), DeviceList.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
-                GameActivity.this.BTCheck(gold);
+                bluetoothBtnState = 4;
             }
         });
 
+        bluetooth.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
+            String devicename;
+            @Override
+            public void onDeviceConnected(String name, String address) {
+                Toast.makeText(getApplicationContext(), "Bluetooth disconnected", Toast.LENGTH_SHORT).show();
+                devicename = name;
+                if (bluetoothBtnState == 1) {
+                    connect.setBackgroundColor(Color.rgb(0,255,0));
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            connect.setText("Playing as " + devicename);
+                        }
+                    }, 5000);
+                }
+                if (bluetoothBtnState == 2) {
+                    mama.setBackgroundColor(Color.argb(50, 255,0,0));
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            mama.setText("Playing as " + devicename);
+                        }
+                    }, 5000);
+                }
+                if (bluetoothBtnState == 3) {
+                    baby.setBackgroundColor(Color.argb(50, 0,0,255));
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            baby.setText("Playing as " + devicename);
+                        }
+                    }, 5000);
+                }
+                if (bluetoothBtnState == 4) {
+                    gold.setBackgroundColor(Color.argb(50,212,175,55));
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            gold.setText("Playing as " + devicename);
+                        }
+                    }, 5000);
+                }
+            }
 
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDeviceDisconnected() {
+                Toast.makeText(getApplicationContext(), "Bluetooth disconnected", Toast.LENGTH_SHORT).show();
+                if (bluetoothBtnState == 1) {
+                    connect.setBackgroundColor(Color.YELLOW);
+                    connect.setText("Connection lost");
+
+                }
+                if (bluetoothBtnState == 2) {
+                    mama.setBackgroundColor(Color.YELLOW);
+                    mama.setText("Connection lost");
+
+                }
+                if (bluetoothBtnState == 3) {
+                    baby.setBackgroundColor(Color.YELLOW);
+                    baby.setText("Connection lost");
+
+                }
+                if (bluetoothBtnState == 4) {
+                    gold.setBackgroundColor(Color.YELLOW);
+                    gold.setText("Connection lost");
+
+                }
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        if (bluetoothBtnState == 1) {
+                            connect.setText(devicename +"Check-in Successful");
+                            connect.setBackgroundColor(Color.GREEN);
+                        }
+                        if (bluetoothBtnState == 2) {
+                            mama.setText(devicename +"Check-in Successful");
+                            mama.setBackgroundColor(Color.argb(125, 255,0,0));
+                        }
+                        if (bluetoothBtnState == 3) {
+                            baby.setText(devicename +"Check-in Successful");
+                            baby.setBackgroundColor(Color.BLUE);
+                        }
+                        if (bluetoothBtnState == 4) {
+                            gold.setText(devicename +"Check-in Successful");
+                            gold.setBackgroundColor(Color.argb(125,212,175,55));
+                        }
+                    }
+                }, 5000);
+                if (bluetoothBtnState == 1) connect.setClickable(false);
+                if (bluetoothBtnState == 2) mama.setClickable(false);
+                if (bluetoothBtnState == 3) baby.setClickable(false);
+                if (bluetoothBtnState == 4) gold.setClickable(false);
+            }
+
+            @Override
+            public void onDeviceConnectionFailed() {
+                Toast.makeText(getApplicationContext(), "Unable to connect", Toast.LENGTH_SHORT).show();
+                if (bluetoothBtnState == 1) {
+                    connect.setText("Unable to connect");
+                    connect.setBackgroundColor(Color.RED);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            connect.setText("CONNECT");
+                            connect.setBackgroundColor(Color.WHITE);
+                        }
+                    }, 5000);
+                }
+                if (bluetoothBtnState == 2) {
+                    mama.setText("Unable to connect");
+                    mama.setBackgroundColor(Color.RED);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            mama.setText("CONNECT");
+                            mama.setBackgroundColor(Color.WHITE);
+                        }
+                    }, 5000);
+                }
+                if (bluetoothBtnState == 3) {
+                    baby.setText("Unable to connect");
+                    baby.setBackgroundColor(Color.RED);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            baby.setText("CONNECT");
+                            baby.setBackgroundColor(Color.WHITE);
+                        }
+                    }, 5000);
+                }
+                if (bluetoothBtnState == 4) {
+                    gold.setText("Unable to connect");
+                    gold.setBackgroundColor(Color.RED);
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            gold.setText("CONNECT");
+                            gold.setBackgroundColor(Color.WHITE);
+                        }
+                    }, 5000);
+                }
+            }
+        });
 
         referenceDoc.addValueEventListener(new ValueEventListener() {
             @Override
@@ -142,72 +280,7 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    public void BTCheck (final Button somebut) {
-        bluetooth.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
-            String devicename;
-            @Override
-            public void onDeviceConnected(String name, String address) {
-                Toast.makeText(getApplicationContext(), "Bluetooth disconnected", Toast.LENGTH_SHORT).show();
-                somebut.setText("Connected to " + name);
-                if (somebut == connect) {
-                    somebut.setBackgroundColor(Color.rgb(0,255,0));
-                }
-                if (somebut == mama) {
-                    somebut.setBackgroundColor(Color.argb(50, 255,0,0));
-                }
-                if (somebut == baby) {
-                    somebut.setBackgroundColor(Color.argb(50, 0,0,255));
-                }
-                if (somebut == gold) {
-                    somebut.setBackgroundColor(Color.argb(50,212,175,55));
-                }
-                devicename = name;
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        somebut.setText("Playing as " + devicename);
-                    }
-                }, 5000);
-            }
 
-            @Override
-            public void onDeviceDisconnected() {
-                Toast.makeText(getApplicationContext(), "Bluetooth disconnected", Toast.LENGTH_SHORT).show();
-                somebut.setBackgroundColor(Color.YELLOW);
-                somebut.setText("Connection lost");
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        somebut.setText(devicename +"Check-in Successful");
-                        if (somebut == connect) {
-                            somebut.setBackgroundColor(Color.GREEN);
-                        }
-                        if (somebut == mama) {
-                            somebut.setBackgroundColor(Color.argb(125, 255,0,0));
-                        }
-                        if (somebut == baby) {
-                            somebut.setBackgroundColor(Color.BLUE);
-                        }
-                        if (somebut == gold) {
-                            somebut.setBackgroundColor(Color.argb(125,212,175,55));
-                        }
-                    }
-                }, 5000);
-                somebut.setClickable(false);
-            }
-
-            @Override
-            public void onDeviceConnectionFailed() {
-                Toast.makeText(getApplicationContext(), "Unable to connect", Toast.LENGTH_SHORT).show();
-                somebut.setText("Unable to connect");
-                somebut.setBackgroundColor(Color.RED);
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        somebut.setText("CONNECT");
-                        somebut.setBackgroundColor(Color.LTGRAY);
-                    }
-                }, 5000);
-            }
-        });
-    }
     public void onPause() {
         super.onPause();
         bluetooth.disconnect();

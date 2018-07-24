@@ -49,11 +49,15 @@
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/connect"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="20dp"
         android:background="#ffffff"
         android:text="mama bear"
         android:textColor="#f06ea2"
-        app:layout_constraintTop_toTopOf="@+id/connect"
-        tools:layout_editor_absoluteX="458dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.619"
+        app:layout_constraintStart_toEndOf="@+id/connect"
+        app:layout_constraintTop_toTopOf="@+id/connect" />
 
     <Button
         android:id="@+id/baby"
