@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
 //    final String ON = "1";
 //    final String OFF = "0";
     private final Handler handler = new Handler();
+    final String StartBT = "S";
     BluetoothSPP bluetooth;
     Button connect;
-    Button btnTalk;
-    ImageView ImageBOT, iconGame, iconPlot;
-    TextView textBOT, btTxt, txtGame, txtPlot;
+    ImageView ImageBOT, iconPlot, iconTalk;
+    TextView textBOT, btTxt, txtPlot, txtTalk;
     Drawable drmorelli;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd, hh:mm:ss");
     SimpleDateFormat sdfDate = new SimpleDateFormat(("yyyy-MM-dd"));
     SimpleDateFormat sdfHours = new SimpleDateFormat(("hh:mm:ss"));
-
+    private static final String TAG = "MainActivity";
     //FIREBASE
     private FirebaseDatabase mDb;
     private DatabaseReference mRef;
@@ -60,10 +61,9 @@ public class MainActivity extends AppCompatActivity {
 //        on = findViewById(R.id.on);
 //        off = findViewById(R.id.off);
         iconPlot = findViewById(R.id.iconPlot);
+        iconTalk = findViewById(R.id.talkIcon);
         txtPlot = findViewById(R.id.txtPlot);
-        btnTalk = findViewById(R.id.btnTalk);
-        iconGame = findViewById(R.id.iconGame);
-        txtGame = findViewById(R.id.txtGame);
+        txtTalk = findViewById(R.id.talkTxt);
         btTxt = findViewById(R.id.btTxt);
         ImageBOT = findViewById(R.id.imageView);
         textBOT = findViewById(R.id.textBOT);
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 connect.setText("Connected to " + name);
                 ImageBOT.setImageResource(R.drawable.dr_peter_morelli);
                 textBOT.setText("Dr. Morelli is now watching you. So let's keep it UP!!");
+                bluetooth.send("S", false);
             }
             @SuppressLint("SetTextI18n")
             public void onDeviceDisconnected() {
@@ -142,24 +143,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        btnTalk.setOnClickListener(new View.OnClickListener() {
+        iconTalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, TalkActivity.class);
                 startActivity(i);
             }
         });
-        iconGame.setOnClickListener(new View.OnClickListener() {
+        txtTalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, GameActivity.class);
-                startActivity(i);
-            }
-        });
-        txtGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, GameActivity.class);
+                Intent i = new Intent(MainActivity.this, TalkActivity.class);
                 startActivity(i);
             }
         });
@@ -185,41 +179,74 @@ public class MainActivity extends AppCompatActivity {
             public void onDataReceived(byte[] data, String message) {
                 btTxt.setText(message);
                 long date = System.currentTimeMillis();
+
+                Log.i(TAG, "aaaaaaaaaaaaaaa"+ message);
+
                 String dateString = sdf.format(date);
                 String dateonlyString = sdfDate.format(date);
                 String hourString = sdfHours.format(date);
 
+                String rYear, rMonth, rDate, rHour, rMin;
+
+                String boxNum, receivedDatesString, receivedSignalString1, receivedSignalString2;
+                String [] receivedDates = new String[0];
+                String [] receivedSignal1 = new String[0];
+                String [] receivedSignal2 = new String[0];
+                String [] boxStringArray = new String[0];
+
 
                 int endOfLineIndex = message.indexOf("~");                    // determine the end-of-line
-                if (endOfLineIndex > 0) {                                           // make sure there data before ~
-                    String dataInPrint = message.substring(0, endOfLineIndex);    // extract string
-                    btTxt.setText("Data Received = " + dataInPrint);
-
-                    if (message.charAt(0) == '#')                             //if it starts with # we know it is what we are looking for
-                    {
-                        String sensor0 = message.substring(1, 5);             //get sensor value from string between indices 1-5
-                        String sensorRaw = message.substring(6, 8);            //same again...
-                        String sensor2 = message.substring(13, 17);
-                        //String sensor3 = ;
-                        //sensorView0.setText(" Sensor 0 Voltage = " + sensor0 + "V");    //update the textviews with sensor values
-                        //sensorViewRaw.setText(" Sensor 0 Raw = " + sensorRaw);
-                        //sensorView2.setText(" Sensor HR = " + sensor2 + "BPM");
-                        //sensorView3.setText(" Sensor 3 Voltage = " + sensor3 + "V");
-                        long x = new Date().getTime();
-                        double y = Double.parseDouble(sensorRaw);
-                        PointValue pointValue = new PointValue(x,y);
-
-                        HashMap<String, String> dataMap = new HashMap<String, String>();
-                        dataMap.put("Voltage", sensor0);
-                        dataMap.put("Raw", sensorRaw);
-                        dataMap.put("HR", sensor2);
-                        //dataMap.put("time", sensor3);
-                        mRef.child("BluetoothDatas").child(dateString).setValue(dataMap);
-                        mRef.child("BluetoothData").child(dateonlyString).child(hourString).setValue(pointValue);
-                    }
+                if (message.charAt(0)== '&'){
+                    receivedDatesString = message.substring(1, endOfLineIndex);
+                    receivedDates = receivedDatesString.split("A", -4);
+                    Log.i(TAG, "AHAHAHAHAHAHAHAHAHAHAHAHAHAHA"+ String.valueOf(receivedDates[0]));
+                    Log.i(TAG, message);
                 }
 
-            }
+                if (message.charAt(0) == '#') {                            //if it starts with # we know it is what we are looking for
+                    receivedSignalString1 = message.substring(1, endOfLineIndex);
+                    receivedSignal1 = receivedSignalString1.split("A", -4);
+                    Log.i(TAG, "WWWWWWWWWWWWWWWWWWWWWWWWWWW"+ String.valueOf(receivedSignal1[0]));
+                }
+
+                if (message.charAt(0)== '%'){
+                    receivedSignalString2 = message.substring(1, endOfLineIndex);
+                    receivedSignal2 = receivedSignalString2.split("A", -2);
+                    Log.i(TAG, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+ String.valueOf(receivedSignal2[0]));
+
+                }
+
+                if (message.contains("BoxNumber")) {
+                    boxStringArray = message.split("BoxNumber", -1);
+                    boxNum = boxStringArray[1];
+                    mRef.child("GameData").child(bluetooth.getConnectedDeviceAddress()).setValue(boxNum);
+                }
+
+                for (int index = 0; index <= endOfLineIndex; index++) {
+                    long time = Long.parseLong(receivedDates[index]);
+                    rYear = receivedDates[index].substring(0, 4);
+                    rMonth = receivedDates[index].substring(4, 6);
+                    rDate = receivedDates[index].substring(6, 8);
+                    rHour = receivedDates[index].substring(8, 10);
+                    rMin = receivedDates[index].substring(10, 12);
+
+                    if (receivedSignal1[0] != null || receivedSignal2[0] !=null) {
+                        double bpm = Double.parseDouble(receivedSignal1[index]);
+                        double steps = Double.parseDouble(receivedSignal2[index]);
+
+                        PointValue pointBPM = new PointValue(time, bpm);
+                        PointValue pointSteps = new PointValue(time, steps);
+
+                        HashMap<String, Double> dataSignals = new HashMap<String, Double>();
+                        HashMap<String, Long> dataMap = new HashMap<String, Long>();
+                        dataSignals.put("Heart Rate", bpm);
+                        dataSignals.put("Steps", steps);
+                        dataMap.put("Raw", time);
+                        mRef.child("BluetoothDatas").child(dateString).setValue(dataMap);
+                        mRef.child("BluetoothData").child(rYear + rMonth + rDate).setValue(pointBPM);
+                    }
+                }
+            } //End of Receiving String Values from Arduino
         });
 
     }
@@ -252,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-            connect.setText("Attempting to connect to: " + BluetoothDevice.EXTRA_NAME);
+            connect.setText("Attempting to connect");
             if (resultCode == Activity.RESULT_OK)
                 bluetooth.connect(data);
         } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {

@@ -73,7 +73,7 @@ public class PlotActivity extends AppCompatActivity {
             public String formatLabel(double value, boolean isValueX) {
 
                 if (isValueX){
-                    return sdfHours.format(new Date((long) value));
+                    return super.formatLabel(value, isValueX);
                 } else {
                     return super.formatLabel(value, isValueX);
                 }
@@ -97,8 +97,8 @@ public class PlotActivity extends AppCompatActivity {
                     PointValue pointValue = mDataSnapshot.getValue(PointValue.class);
                     dp[index] = new DataPoint(pointValue.getxValue(),pointValue.getyValue());
                     Log.i(TAG, "BMES:" + pointValue);
-                    long x = new Date().getTime();
-                    graphView.getViewport().setMinX(x-20000);
+                    long x = pointValue.getxValue();
+                    graphView.getViewport().setMinX(x-400);
                     graphView.getViewport().setMaxX(x);
                     graphView.getViewport().setXAxisBoundsManual(true);
 
@@ -117,8 +117,8 @@ public class PlotActivity extends AppCompatActivity {
                     PointValue pointValue = mDataSnapshot.getValue(PointValue.class);
                     dp[index] = new DataPoint(pointValue.getxValue(),pointValue.getyValue());
                     Log.i(TAG, "BMES:" + pointValue);
-                    long x = new Date().getTime();
-                    graphView.getViewport().setMinX(x-20000);
+                    long x = pointValue.getxValue();
+                    graphView.getViewport().setMinX(x-400);
                     graphView.getViewport().setMaxX(x);
                     graphView.getViewport().setXAxisBoundsManual(true);
                     index++;
