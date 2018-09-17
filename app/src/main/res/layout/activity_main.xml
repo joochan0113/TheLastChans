@@ -20,7 +20,7 @@
         app:layout_constraintStart_toEndOf="@+id/talkIcon"
         app:layout_constraintTop_toTopOf="@+id/talkIcon"
         app:srcCompat="@drawable/plotsignal" />
-sss
+
 
     <TextView
         android:id="@+id/txtPlot"
