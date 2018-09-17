@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     if (receivedSignal1[0] != null || receivedSignal2[0] !=null) {
                         double bpm = Double.parseDouble(receivedSignal1[index]);
                         double steps = Double.parseDouble(receivedSignal2[index]);
-                        
+
 
                         PointValue pointBPM = new PointValue(time, bpm);
                         PointValue pointSteps = new PointValue(time, steps);
