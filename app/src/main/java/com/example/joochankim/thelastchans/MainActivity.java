@@ -178,13 +178,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataReceived(byte[] data, String message) {
                 btTxt.setText(message);
-                long date = System.currentTimeMillis();
 
                 Log.i(TAG, "aaaaaaaaaaaaaaa"+ message);
 
-                String dateString = sdf.format(date);
-                String dateonlyString = sdfDate.format(date);
-                String hourString = sdfHours.format(date);
 
                 String rYear, rMonth, rDate, rHour, rMin;
 
@@ -193,24 +189,28 @@ public class MainActivity extends AppCompatActivity {
                 String [] receivedSignal1 = new String[0];
                 String [] receivedSignal2 = new String[0];
                 String [] boxStringArray = new String[0];
+                String [] rBTALLlines = new String[0];
+                int endOfLineIndex = message.indexOf("%");                    // it's not end of line, but just there to keep the for-loop going :) Nothing much
+                rBTALLlines = message.split("~",-4);
 
-
-                int endOfLineIndex = message.indexOf("~");                    // determine the end-of-line
-                if (message.charAt(0)== '&'){
-                    receivedDatesString = message.substring(1, endOfLineIndex);
+                if (rBTALLlines[1].charAt(0)== '&'){  //Time
+                    int stringSize = rBTALLlines[1].length();
+                    receivedDatesString = message.substring(1, stringSize);
                     receivedDates = receivedDatesString.split("A", -4);
                     Log.i(TAG, "AHAHAHAHAHAHAHAHAHAHAHAHAHAHA"+ String.valueOf(receivedDates[0]));
                     Log.i(TAG, message);
                 }
 
-                if (message.charAt(0) == '#') {                            //if it starts with # we know it is what we are looking for
-                    receivedSignalString1 = message.substring(1, endOfLineIndex);
+                if (rBTALLlines[0].charAt(0) == '#') {       //SIGNAL 1
+                    int stringSize = rBTALLlines[0].length();
+                    receivedSignalString1 = message.substring(1, stringSize);
                     receivedSignal1 = receivedSignalString1.split("A", -4);
                     Log.i(TAG, "WWWWWWWWWWWWWWWWWWWWWWWWWWW"+ String.valueOf(receivedSignal1[0]));
                 }
 
-                if (message.charAt(0)== '%'){
-                    receivedSignalString2 = message.substring(1, endOfLineIndex);
+                if (rBTALLlines[2].charAt(0)== '%'){         //SIGNAL 2
+                    int stringSize = rBTALLlines[2].length();
+                    receivedSignalString2 = message.substring(1, stringSize);
                     receivedSignal2 = receivedSignalString2.split("A", -2);
                     Log.i(TAG, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+ String.valueOf(receivedSignal2[0]));
 
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                         dataSignals.put("Heart Rate", bpm);
                         dataSignals.put("Steps", steps);
                         dataMap.put("Raw", time);
-                        mRef.child("BluetoothDatas").child(dateString).setValue(dataMap);
+                        mRef.child("BluetoothDatas").child(rYear + rMonth + rDate).setValue(dataMap);
                         mRef.child("BluetoothData").child(rYear + rMonth + rDate).setValue(pointBPM);
                     }
                 }
