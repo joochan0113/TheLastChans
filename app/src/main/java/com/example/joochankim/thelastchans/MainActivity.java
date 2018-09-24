@@ -192,29 +192,28 @@ public class MainActivity extends AppCompatActivity {
                 String [] rBTALLlines = new String[0];
                 int endOfLineIndex = message.indexOf("%");                    // it's not end of line, but just there to keep the for-loop going :) Nothing much
                 rBTALLlines = message.split("~",-4);
+                Log.i(TAG, rBTALLlines[0]);
+                Log.i(TAG, rBTALLlines[1]);
+                Log.i(TAG, rBTALLlines[2]);
 
-                if (rBTALLlines[1].charAt(0)== '&'){  //Time
-                    int stringSize = rBTALLlines[1].length();
-                    receivedDatesString = message.substring(1, stringSize);
-                    receivedDates = receivedDatesString.split("A", -4);
-                    Log.i(TAG, "AHAHAHAHAHAHAHAHAHAHAHAHAHAHA"+ String.valueOf(receivedDates[0]));
-                    Log.i(TAG, message);
-                }
+                int stringSize1 = rBTALLlines[0].length();
+                int stringSize = rBTALLlines[1].length();
+                int stringSize2 = rBTALLlines[2].length();
 
-                if (rBTALLlines[0].charAt(0) == '#') {       //SIGNAL 1
-                    int stringSize = rBTALLlines[0].length();
-                    receivedSignalString1 = message.substring(1, stringSize);
-                    receivedSignal1 = receivedSignalString1.split("A", -4);
-                    Log.i(TAG, "WWWWWWWWWWWWWWWWWWWWWWWWWWW"+ String.valueOf(receivedSignal1[0]));
-                }
+                receivedSignalString1 = rBTALLlines[0].substring(1, stringSize1);
+                receivedSignal1 = receivedSignalString1.split("A", -4);
+                Log.i(TAG, "WWWWWWWWWWWW" + String.valueOf(receivedSignal1[0]));
+                Log.i(TAG, "WWWWWWWWWWWW" + String.valueOf(receivedSignal1[1]));
 
-                if (rBTALLlines[2].charAt(0)== '%'){         //SIGNAL 2
-                    int stringSize = rBTALLlines[2].length();
-                    receivedSignalString2 = message.substring(1, stringSize);
-                    receivedSignal2 = receivedSignalString2.split("A", -2);
-                    Log.i(TAG, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+ String.valueOf(receivedSignal2[0]));
+                receivedDatesString = rBTALLlines[1].substring(2, stringSize);
+                receivedDates = receivedDatesString.split("A", -4);
+                Log.i(TAG, "AHAHAHAHAHAHA" + String.valueOf(receivedDates[0]));
+                Log.i(TAG, "AHAHAHAHAHAHA" + String.valueOf(receivedDates[1]));
 
-                }
+                receivedSignalString2 = rBTALLlines[2].substring(2, stringSize2);
+                receivedSignal2 = receivedSignalString2.split("A", -2);
+                Log.i(TAG, "XXXXXXXXXXXXX" + String.valueOf(receivedSignal2[0]));
+                Log.i(TAG, "XXXXXXXXXXXXX" + String.valueOf(receivedSignal2[1]));
 
                 if (message.contains("BoxNumber")) {
                     boxStringArray = message.split("BoxNumber", -1);
@@ -222,30 +221,27 @@ public class MainActivity extends AppCompatActivity {
                     mRef.child("GameData").child(bluetooth.getConnectedDeviceAddress()).setValue(boxNum);
                 }
 
-                for (int index = 0; index <= endOfLineIndex; index++) {
+                for (int index = 0; index <= 1; index++) {
                     long time = Long.parseLong(receivedDates[index]);
                     rYear = receivedDates[index].substring(0, 4);
                     rMonth = receivedDates[index].substring(4, 6);
                     rDate = receivedDates[index].substring(6, 8);
                     rHour = receivedDates[index].substring(8, 10);
                     rMin = receivedDates[index].substring(10, 12);
-
-                    if (receivedSignal1[0] != null || receivedSignal2[0] !=null) {
-                        double bpm = Double.parseDouble(receivedSignal1[index]);
-                        double steps = Double.parseDouble(receivedSignal2[index]);
+                    double bpm = Double.parseDouble(receivedSignal1[index]);
+                    double steps = Double.parseDouble(receivedSignal2[index]);
 
 
-                        PointValue pointBPM = new PointValue(time, bpm);
-                        PointValue pointSteps = new PointValue(time, steps);
-
-                        HashMap<String, Double> dataSignals = new HashMap<String, Double>();
-                        HashMap<String, Long> dataMap = new HashMap<String, Long>();
-                        dataSignals.put("Heart Rate", bpm);
-                        dataSignals.put("Steps", steps);
-                        dataMap.put("Raw", time);
-                        mRef.child("BluetoothDatas").child(rYear + rMonth + rDate).setValue(dataMap);
-                        mRef.child("BluetoothData").child(rYear + rMonth + rDate).setValue(pointBPM);
-                    }
+                    PointValue pointBPM = new PointValue(time, bpm);
+                    PointValue pointSteps = new PointValue(time, steps);
+                    HashMap<String, String> dataSignals = new HashMap<String, String>();
+//                    HashMap<String, Long> dataMap = new HashMap<String, Long>();
+                    dataSignals.put("Heart Rate", receivedSignal1[index]);
+                    dataSignals.put("Steps", receivedSignal2[index]);
+                    dataSignals.put("Raw", receivedDates[index]);
+                    mRef.child("BluetoothDatas").child(rYear + rMonth + rDate).child(rHour + rMin).setValue(dataSignals);
+                    mRef.child("BluetoothData").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointBPM);
+                    mRef.child("BluetoothDataStep").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointSteps);
                 }
             } //End of Receiving String Values from Arduino
         });

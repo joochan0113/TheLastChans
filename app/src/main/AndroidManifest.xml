@@ -14,7 +14,6 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
         <activity android:name=".TalkActivity"/>
         <activity android:name=".PlotActivity"/>
-        <activity android:name=".GameActivity"/>
         <activity android:name=".MainActivity"
             android:screenOrientation= "portrait"/>
         <activity android:name=".LoginActivity">
