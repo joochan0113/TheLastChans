@@ -222,26 +222,31 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 for (int index = 0; index <= 1; index++) {
-                    long time = Long.parseLong(receivedDates[index]);
+                    String timeS = receivedDates[index];
+                    String bpmS = receivedSignal1[index];
+                    String stepS = receivedSignal2[index];
                     rYear = receivedDates[index].substring(0, 4);
                     rMonth = receivedDates[index].substring(4, 6);
                     rDate = receivedDates[index].substring(6, 8);
                     rHour = receivedDates[index].substring(8, 10);
                     rMin = receivedDates[index].substring(10, 12);
-                    double bpm = Double.parseDouble(receivedSignal1[index]);
-                    double steps = Double.parseDouble(receivedSignal2[index]);
 
 
-                    PointValue pointBPM = new PointValue(time, bpm);
-                    PointValue pointSteps = new PointValue(time, steps);
+//                    long time = Long.parseLong(receivedDates[index]);
+//                    double bpm = Double.parseDouble(receivedSignal1[index]);
+//                    double steps = Double.parseDouble(receivedSignal2[index]);
+                    GraphValue graphValue = new GraphValue(timeS, bpmS, stepS);
+//                    PointValue pointBPM = new PointValue(time, bpm);
+//                    PointValue pointSteps = new PointValue(time, steps);
                     HashMap<String, String> dataSignals = new HashMap<String, String>();
-//                    HashMap<String, Long> dataMap = new HashMap<String, Long>();
+////                    HashMap<String, Long> dataMap = new HashMap<String, Long>();
                     dataSignals.put("Heart Rate", receivedSignal1[index]);
                     dataSignals.put("Steps", receivedSignal2[index]);
                     dataSignals.put("Raw", receivedDates[index]);
                     mRef.child("BluetoothDatas").child(rYear + rMonth + rDate).child(rHour + rMin).setValue(dataSignals);
-                    mRef.child("BluetoothData").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointBPM);
-                    mRef.child("BluetoothDataStep").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointSteps);
+                    mRef.child("BluetoothData").child(rYear + rMonth + rDate+rHour + rMin).setValue(graphValue);
+//                    mRef.child("BluetoothData").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointBPM);
+//                    mRef.child("BluetoothDataStep").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointSteps);
                 }
             } //End of Receiving String Values from Arduino
         });
