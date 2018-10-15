@@ -18,8 +18,15 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.text.ParseException;
+import java.text.DateFormat;
+import java.sql.Timestamp;
+
 
 public class PlotActivity extends AppCompatActivity {
 
@@ -30,12 +37,24 @@ public class PlotActivity extends AppCompatActivity {
     EditText yValue;
     GraphView graphView;
     LineGraphSeries series;
-    //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd, hh:mm:ss");
+//    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
     //SimpleDateFormat sdfDate = new SimpleDateFormat(("yyyy-MM-dd"));
     SimpleDateFormat sdfHours = new SimpleDateFormat(("hh:mm:ss"));
     Handler bluetoothIn;
     final int handlerState = 0;
     private StringBuilder recDataString = new StringBuilder();
+    Date convertedDate = null;
+    DateFormat sdf = new SimpleDateFormat("MM/dd, hh:mm");
+
+    public String convertTime(long time){
+//        Date date = new Date(time);
+//        Format format = new SimpleDateFormat("yyyyMMddhhmm");
+//        return format.format(date);
+        Date date;
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
+        return df.format(new Date(time));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +67,9 @@ public class PlotActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("BluetoothData");
-
         yValue = (EditText) findViewById(R.id.y_Value_);
+
+
 //        btn_insert = (Button) findViewById(R.id.btn_insert);
         //SETTING COLORS of the Graph
         //series.setColor(Color.GREEN);
@@ -59,22 +79,19 @@ public class PlotActivity extends AppCompatActivity {
         series.setBackgroundColor(Color.argb(60,200,0,0));
         series.setDrawDataPoints(true); //setDataPointsRadius(#radius)
         graphView.getViewport().setMinY(0);
-        graphView.getViewport().setMaxY(100.0);
+        graphView.getViewport().setMaxY(200.0);
         graphView.getViewport().setScrollable(true);
         graphView.getViewport().setScalable(true);
         graphView.getViewport().setScalableY(false);
         graphView.getViewport().setYAxisBoundsManual(true);
-
-
-
-        graphView.getGridLabelRenderer().setNumHorizontalLabels(2);
+        graphView.getGridLabelRenderer().setNumHorizontalLabels(3);
         //Viewport;
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
             @Override
             public String formatLabel(double value, boolean isValueX) {
 
                 if (isValueX){
-                    return super.formatLabel(value, isValueX);
+                    return sdf.format(new Date((long) value));
                 } else {
                     return super.formatLabel(value, isValueX);
                 }
@@ -90,20 +107,17 @@ public class PlotActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DataPoint[] dp = new DataPoint[ (int) dataSnapshot.getChildrenCount()];
-                Log.i(TAG, "BAAAH: "+ dp.length);
+//                Log.i(TAG, "BAAAH: "+ dp.length);
                 int index = 0;
-
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 for (DataSnapshot child : children) {
                     GraphValue graphValue = child.getValue(GraphValue.class);
-                    Log.i(TAG, graphValue.gettimeValue());
-
                     long timeL = Long.parseLong(graphValue.gettimeValue());
                     double hrD = Double.parseDouble(graphValue.gethrValue());
+                    Log.i(TAG, "D"+convertTime(timeL));
 
-                    PointValue hrValue = new PointValue(timeL, hrD);
+                    PointValue hrValue = new PointValue(Long.parseLong(convertTime(timeL)), hrD);
                     dp[index] = new DataPoint(hrValue.getxValue(),hrValue.getyValue());
-                    Log.i(TAG, "BMES:" + hrValue);
                     long x = hrValue.getxValue();
                     graphView.getViewport().setMinX(x-400);
                     graphView.getViewport().setMaxX(x);
@@ -118,71 +132,6 @@ public class PlotActivity extends AppCompatActivity {
 
             }
         });
-//        reference.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                DataPoint[] dp = new DataPoint[ (int) dataSnapshot.getChildrenCount()];
-//                Log.i(TAG, "BAAAM: "+ dp.length);
-//                int index = 0;
-//                Log.i(TAG, "dd  " + dataSnapshot.getChildren());
-//
-//                for(DataSnapshot mDataSnapshot : dataSnapshot.getChildren()){
-//
-//                    String timesS = mDataSnapshot.child("Heart Rate").getValue(String.class);
-//                    Log.i(TAG, "dd  " + timesS);
-//                    long timeL = Long.parseLong(timesS);
-//                    String Sig1S = mDataSnapshot.child("Heart Rate").getValue(String.class);
-//                    String Sig2S = mDataSnapshot.child("Steps").getValue(String.class);
-//                    double Sig1D = Double.parseDouble(Sig1S);
-////                    double Sig2D = Double.parseDouble(Sig2S);
-//                    PointValue hrValue = new PointValue(timeL, Sig1D);
-////                    PointValue stepsValue = new PointValue(timeL, Sig2D);
-//                    dp[index] = new DataPoint(hrValue.getxValue(),hrValue.getyValue());
-//                    Log.i(TAG, "BMES:" + hrValue);
-//                    long x = hrValue.getxValue();
-//                    graphView.getViewport().setMinX(x-400);
-//                    graphView.getViewport().setMaxX(x);
-//                    graphView.getViewport().setXAxisBoundsManual(true);
-//
-//                    index++;
-//                }
-//                series.resetData(dp);
-//            }
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//                DataPoint[] dp = new DataPoint[ (int) dataSnapshot.getChildrenCount()];
-//                Log.i(TAG, "BAAAH: "+ dp.length);
-//                int index = 0;
-//
-//                for(DataSnapshot mDataSnapshot : dataSnapshot.getChildren()){
-//
-//                    PointValue pointValue = mDataSnapshot.getValue(PointValue.class);
-//                    dp[index] = new DataPoint(pointValue.getxValue(),pointValue.getyValue());
-//                    Log.i(TAG, "BMES:" + pointValue);
-//                    long x = pointValue.getxValue();
-//                    graphView.getViewport().setMinX(x-400);
-//                    graphView.getViewport().setMaxX(x);
-//                    graphView.getViewport().setXAxisBoundsManual(true);
-//                    index++;
-//                }
-//                series.resetData(dp);
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.i(TAG, "foo");
-//            }
-//        });
 
     }
 }

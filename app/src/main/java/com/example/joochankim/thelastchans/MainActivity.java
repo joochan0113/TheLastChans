@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView ImageBOT, iconPlot, iconTalk;
     TextView textBOT, btTxt, txtPlot, txtTalk;
     Drawable drmorelli;
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd, hh:mm:ss");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmm");
     SimpleDateFormat sdfDate = new SimpleDateFormat(("yyyy-MM-dd"));
     SimpleDateFormat sdfHours = new SimpleDateFormat(("hh:mm:ss"));
     private static final String TAG = "MainActivity";
@@ -194,23 +194,25 @@ public class MainActivity extends AppCompatActivity {
                 rBTALLlines = message.split("~",-4);
                 Log.i(TAG, rBTALLlines[0]);
                 Log.i(TAG, rBTALLlines[1]);
+                Log.i(TAG, String.valueOf(rBTALLlines[1].indexOf("&")));
                 Log.i(TAG, rBTALLlines[2]);
 
-                int stringSize1 = rBTALLlines[0].length();
-                int stringSize = rBTALLlines[1].length();
+                int stringSize = rBTALLlines[0].length();
+                int stringSize1 = rBTALLlines[1].length();
                 int stringSize2 = rBTALLlines[2].length();
 
-                receivedSignalString1 = rBTALLlines[0].substring(1, stringSize1);
+                receivedDatesString = rBTALLlines[0].substring(1, stringSize);
+                receivedDates = receivedDatesString.split("A", -4);
+                int countPlot = receivedDates.length;
+                Log.i(TAG, "AHAHAHAHAHAHA" + String.valueOf(receivedDates[0]));
+                Log.i(TAG, "AHAHAHAHAHAHA" + String.valueOf(receivedDates[1]));
+
+                receivedSignalString1 = rBTALLlines[1].substring(rBTALLlines[1].indexOf("&")+1, stringSize1);
                 receivedSignal1 = receivedSignalString1.split("A", -4);
                 Log.i(TAG, "WWWWWWWWWWWW" + String.valueOf(receivedSignal1[0]));
                 Log.i(TAG, "WWWWWWWWWWWW" + String.valueOf(receivedSignal1[1]));
 
-                receivedDatesString = rBTALLlines[1].substring(2, stringSize);
-                receivedDates = receivedDatesString.split("A", -4);
-                Log.i(TAG, "AHAHAHAHAHAHA" + String.valueOf(receivedDates[0]));
-                Log.i(TAG, "AHAHAHAHAHAHA" + String.valueOf(receivedDates[1]));
-
-                receivedSignalString2 = rBTALLlines[2].substring(2, stringSize2);
+                receivedSignalString2 = rBTALLlines[2].substring(rBTALLlines[2].indexOf("$")+1, stringSize2);
                 receivedSignal2 = receivedSignalString2.split("A", -2);
                 Log.i(TAG, "XXXXXXXXXXXXX" + String.valueOf(receivedSignal2[0]));
                 Log.i(TAG, "XXXXXXXXXXXXX" + String.valueOf(receivedSignal2[1]));
@@ -221,10 +223,11 @@ public class MainActivity extends AppCompatActivity {
                     mRef.child("GameData").child(bluetooth.getConnectedDeviceAddress()).setValue(boxNum);
                 }
 
-                for (int index = 0; index <= 1; index++) {
+                for (int index = 0; index <= countPlot-2; index++) {
                     String timeS = receivedDates[index];
                     String bpmS = receivedSignal1[index];
                     String stepS = receivedSignal2[index];
+                    Log.i(TAG, "ff" + String.valueOf(receivedDates[index]));
                     rYear = receivedDates[index].substring(0, 4);
                     rMonth = receivedDates[index].substring(4, 6);
                     rDate = receivedDates[index].substring(6, 8);
