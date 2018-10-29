@@ -13,9 +13,11 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +33,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
 //    final String ON = "1";
 //    final String OFF = "0";
@@ -129,20 +131,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        txtPlot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, PlotActivity.class);
-                startActivity(i);
-            }
-        });
-        iconPlot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, PlotActivity.class);
-                startActivity(i);
-            }
-        });
+//        txtPlot.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i = new Intent(MainActivity.this, PlotActivity.class);
+//                startActivity(i);
+//            }
+//        });
+//        iconPlot.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i = new Intent(MainActivity.this, PlotActivity.class);
+//                startActivity(i);
+//            }
+//        });
         iconTalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,4 +301,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.popup_menu);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Intent i = new Intent(MainActivity.this, PlotActivity.class);
+        Intent isstep = new Intent(MainActivity.this, PlotstepActivity.class);
+        if (item.getItemId() == R.id.item1) {
+            Toast.makeText(this, "HeartRate Plot selected", Toast.LENGTH_SHORT);
+            startActivity(i);
+        }
+        if (item.getItemId() == R.id.item2) {
+            Toast.makeText(this, "Steps Plot selected", Toast.LENGTH_SHORT);
+            startActivity(isstep);
+        }
+        return false;
+    }
 }
