@@ -15,5 +15,27 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="50dp" />
 
+    <TextView
+        android:id="@+id/stepsTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/graphStep"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="70dp"
+        android:text="Total Steps: "
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/dateTextStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/stepsTotal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-32dp"
+        android:textSize="24sp" />
+
 
 </RelativeLayout>

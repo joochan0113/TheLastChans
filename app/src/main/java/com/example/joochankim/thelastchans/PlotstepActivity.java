@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import java.text.SimpleDateFormat;
@@ -45,12 +48,12 @@ public class PlotstepActivity extends AppCompatActivity {
         reference = database.getReference("BluetoothData");
         series.setColor(Color.rgb(225,90,30));
         graphView.getViewport().setMinY(0);
-        graphView.getViewport().setMaxY(10000);
+        graphView.getViewport().setMaxY(1500);
         graphView.getViewport().setScrollable(true);
         graphView.getViewport().setScalable(true);
-        graphView.getViewport().setScalableY(true);
-//        graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getGridLabelRenderer().setNumHorizontalLabels(5);
+        graphView.getViewport().setScalableY(false);
+        graphView.getViewport().setYAxisBoundsManual(true);
+        graphView.getGridLabelRenderer().setNumHorizontalLabels(4);
         //Viewport;
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
             @Override
@@ -59,7 +62,8 @@ public class PlotstepActivity extends AppCompatActivity {
                 if (isValueX){
                     Date d = new Date((long) (value));
                     return (sdf.format(d));
-                    } else {
+                    }
+                else {
                     return "" + (int) value;
                     //return super.formatLabel(value, isValueX);
                 }
@@ -67,17 +71,21 @@ public class PlotstepActivity extends AppCompatActivity {
         });
         graphView.getGridLabelRenderer().setTextSize(20f);
         graphView.getGridLabelRenderer().reloadStyles();
+//        float mzxx = graphView.getX();
+//        double mzx = graphView.getViewport().getMaxX(false);
+//        double mzn = graphView.getViewport().getMinX(false);
+//        //double midz = (mzx - mzn)/2;
+//        Log.i(TAG,"What does this number means?" + mzxx +"//"+ mzx);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DataPoint[] dp = new DataPoint[ (int) dataSnapshot.getChildrenCount()];
-
                 int index = 0;
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 for (DataSnapshot child : children) {
@@ -88,7 +96,6 @@ public class PlotstepActivity extends AppCompatActivity {
                     Calendar calendar;
                     timeRaw = graphValue.gettimeValue();
                     Integer [] timeRawSA = new Integer[5];
-                    Log.i(TAG, "What is Time?:" + timeRaw);
                     timeRawSA[0] = Integer.parseInt(timeRaw.substring(0, 4)); //Year
                     timeRawSA[1] = Integer.parseInt(timeRaw.substring(4, 6)); // Month
                     timeRawSA[2] = Integer.parseInt(timeRaw.substring(6, 8)); // Date
@@ -110,10 +117,8 @@ public class PlotstepActivity extends AppCompatActivity {
                 }
                 series.resetData(dp);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 

@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     BluetoothSPP bluetooth;
     Button connect;
     ImageView ImageBOT, iconPlot, iconTalk;
-    TextView textBOT, btTxt, txtPlot, txtTalk;
+    TextView textBOT, txtPlot, txtTalk;
     Drawable drmorelli;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmm");
     SimpleDateFormat sdfDate = new SimpleDateFormat(("yyyy-MM-dd"));
@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         iconTalk = findViewById(R.id.talkIcon);
         txtPlot = findViewById(R.id.txtPlot);
         txtTalk = findViewById(R.id.talkTxt);
-        btTxt = findViewById(R.id.btTxt);
         ImageBOT = findViewById(R.id.imageView);
         textBOT = findViewById(R.id.textBOT);
         drmorelli = getResources().getDrawable(R.drawable.dr_peter_morelli);
@@ -179,8 +178,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             @SuppressLint("SetTextI18n")
             @Override
             public void onDataReceived(byte[] data, String message) {
-                btTxt.setText(message);
-
                 Log.i(TAG, "aaaaaaaaaaaaaaa"+ message);
 
 
@@ -250,8 +247,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                     dataSignals.put("Raw", receivedDates[index]);
                     mRef.child("BluetoothDatas").child(rYear + rMonth + rDate).child(rHour + rMin).setValue(dataSignals);
                     mRef.child("BluetoothData").child(rYear + rMonth + rDate+rHour + rMin).setValue(graphValue);
-//                    mRef.child("BluetoothData").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointBPM);
-//                    mRef.child("BluetoothDataStep").child(rYear + rMonth + rDate+rHour + rMin).setValue(pointSteps);
+
                 }
             } //End of Receiving String Values from Arduino
         });
